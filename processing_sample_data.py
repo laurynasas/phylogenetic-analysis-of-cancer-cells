@@ -23,8 +23,6 @@ def diff_char_string(a,b):
 	for i,j in zip(a,b):
 		if i != j:
 			distance+=1
-	if distance == 0:
-		print a, b
 	return distance
 
 
@@ -43,7 +41,7 @@ def find_distance_matrix(unique_rows):
 
 
 def find_min_corner(distance_matrix):
-	print distance_matrix
+	# print distance_matrix
 	minimal = max(distance_matrix[0][1:])
 	location = (-1,-1)
 	for i in range(len(distance_matrix[0])):
@@ -55,21 +53,6 @@ def find_min_corner(distance_matrix):
 	return location
 
 
-def delete_row_and_column(distance_matrix,location):
-	for i in range(len(distance_matrix[0])):
-		del distance_matrix[i][location[0]]
-		del distance_matrix[i][location[1]-1]
-	del distance_matrix[location[0]]
-	del distance_matrix[location[1]-1]
-
-	return distance_matrix
-
-
-def add_new_row_and_column(distance_matrix,row, position):
-	distance_matrix = distance_matrix[:position[0]-1] + [row] + distance_matrix[position[0]:]
-	distance_matrix = distance_matrix[:position[1]-1] + [row] + distance_matrix[position[1]:]
-	print np.matrix(distance_matrix)
-
 def merge(distance_matrix, location, clusters):
 	# print len(distance_matrix[0])	
 	distance_matrix = distance_matrix.tolist()
@@ -77,10 +60,10 @@ def merge(distance_matrix, location, clusters):
 	del new_row[location[1]]
 	print "new row: ",new_row
 	distance_matrix = np.matrix(distance_matrix)
-
+	print "Cluster before failing", clusters
 	clusters[location[0]] += [clusters[location[1]]]
 	del clusters[location[1]]
-	print clusters
+	print "Cluster after adding new stuff",clusters
 	distance_matrix = np.delete(distance_matrix, (location[0]), axis=0)
 	distance_matrix = np.delete(distance_matrix, (location[1]-1), axis=0)
 
@@ -94,31 +77,30 @@ def merge(distance_matrix, location, clusters):
 	distance_matrix = np.insert(distance_matrix, location[0], new_row, axis=1)
 	distance_matrix = np.matrix(distance_matrix)
 	print "After added new liens\n",distance_matrix
+	print "SIZE after merging", distance_matrix.size
 
 	return distance_matrix, clusters
 	# print new_row
 	# print distance_matrix
-	print distance_matrix.size
 	# delete_row_and_column(distance_matrix, location)
 	# add_new_row_and_column(distance_matrix, new_row, location)
 
 def single_linkage_clustering(distance_matrix):
-	clusters = {}
-	for x in range(distance_matrix[0].size):
-		clusters[x] = [x]
+	clusters = []
+	for i in range(distance_matrix[0].size):
+		clusters += [['V'+str(i)]]
 	print clusters
 	location = find_min_corner(distance_matrix.tolist())
 	while location != (-1,-1):
-		# print 
 		location = find_min_corner(distance_matrix.tolist())
 		if location != (-1,-1):
 			(distance_matrix,clusters) = merge(distance_matrix, location, clusters)
-	print "final",clusters
+	# print "final",clusters
 if __name__ == '__main__':
 	dir = "./data/sample_data.csv"
 	unique_rows = process_file(dir)
-	print unique_rows
-	# distance_matrix = np.matrix(find_distance_matrix(unique_rows))
-	distance_matrix = np.matrix([[0,662,877,255,412,996],[662,0,295,468,268,400],[877,295,0,754,564,138],[255,468,754,0,219,869],[412,268,564,219,0,669],[996,400,138,869,669,0]])
-	print "--->\n",distance_matrix
+	# print unique_rows
+	distance_matrix = np.matrix(find_distance_matrix(unique_rows))
+	# distance_matrix = np.matrix([[0,662,877,255,412,996],[662,0,295,468,268,400],[877,295,0,754,564,138],[255,468,754,0,219,869],[412,268,564,219,0,669],[996,400,138,869,669,0]])
+	# print "--->\n",distance_matrix
 	print single_linkage_clustering(distance_matrix)
