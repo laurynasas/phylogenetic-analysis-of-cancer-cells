@@ -16,17 +16,15 @@ def count_occurences(list):
 
     for key in occ.keys():
         occ[key] = occ[key] * 1.0 / total
-    print occ
     return occ
 
 
 def bernoulli_distro(p, x):
-    return power(p, x) * power((1 - p), (1 - x))
+    return (p ** x) * ((1 - p) ** (1 - x))
 
 
 def prob_x_generated_by_cluster_k(x_vector, miu_pixel_distributions, k_cluster):
     product = 1
-
     for i in xrange(len(x_vector)):
         product *= bernoulli_distro(miu_pixel_distributions[k_cluster][i], x_vector[i])
     return product
@@ -64,8 +62,6 @@ def log_likelihood_complete_data(likelihood):
 
 
 def expectation_step(z_matrix, pi_proportion_of_images, miu_pixel_distributions):
-    n_images, k_clusters = z_matrix.shape
-
     for n in xrange(n_images):
         x_vector = x_vectors[n]
         for k in xrange(k_clusters):
@@ -74,8 +70,14 @@ def expectation_step(z_matrix, pi_proportion_of_images, miu_pixel_distributions)
             for m in xrange(k_clusters):
                 den += pi_proportion_of_images[m] * prob_x_generated_by_cluster_k(x_vector, miu_pixel_distributions, m)
 
-            z_matrix[n, k] = nom * 1.0 / den
+            nom = nan_to_num(nom)
+            den = nan_to_num(den)
 
+            # if den == 0.0:
+            #     den = 1.0
+            # print nom, den
+            z_matrix[n, k] = nom * 1.0 / den
+    # print z_matrix, "\n------^z_new---\n"
     return z_matrix
 
 
@@ -87,10 +89,9 @@ def N_m_effective_number_of_images(z_matrix, k_cluster):
 
 
 def maximize_miu(miu_pixel_distributions, z_matrix, x_vectors):
-
     for m in xrange(k_clusters):
         for j in xrange(d_pixels):
-            N_m = N_m_effective_number_of_images(n_images, z_matrix, m)
+            N_m = N_m_effective_number_of_images(z_matrix, m)
 
             total = sum(x_vectors[n, j] * z_matrix[n, m] for n in xrange(n_images))
 
@@ -101,10 +102,18 @@ def maximize_miu(miu_pixel_distributions, z_matrix, x_vectors):
 
 def maximize_pi(n_images, z_matrix, x_vectors, k_clusters, pi_proportion_of_images):
     for m in xrange(k_clusters):
-        N_m = N_m_effective_number_of_images(n_images, z_matrix, m)
+        N_m = N_m_effective_number_of_images(z_matrix, m)
         pi_proportion_of_images[m] = N_m * 1.0 / n_images
 
     return pi_proportion_of_images
+
+
+def find_labels(z_matrix):
+    labels = []
+
+    for i in xrange(z_matrix.shape[0]):
+        labels.append(argmax(z_matrix[i]))
+    return labels
 
 
 if __name__ == '__main__':
@@ -120,39 +129,70 @@ if __name__ == '__main__':
         for i in xrange(rep):
             x_vectors.append(x_vector)
 
+    # x_vectors = [[1, 1, 1, 1], [0, 0, 0, 1], [0, 0, 1, 1], [1, 1, 1, 1], [1, 0, 1, 1]]
     x_vectors = array(x_vectors)
+
     n_images = sum(unique_rows[key] for key in unique_rows.keys())
+    # n_images = len(x_vectors)
+
     d_pixels = len(unique_rows.keys()[0].split(","))
+    # d_pixels = 4
+
     k_clusters = 12
-
-    miu_pixel_distributions = zeros((d_pixels, k_clusters))
-
     lam = 5
-    # pi_proportion_of_images = dirichlet(ones(k_clusters), size=1)
+    iter_count = 50
 
-    z_matrix = zeros((k_clusters, n_images), dtype=int64)
+    miu_pixel_distributions = ones((k_clusters, d_pixels))
 
-    z_matrix[0] = ones(n_images)
+    for k in xrange(k_clusters):
+        normalize = 0
 
-    for i in range(n_images):
-        shuffle(z_matrix[:, i])
-    print sum(z_matrix, axis=1)
-    pi_proportion_of_images = sum(z_matrix, axis=1) * 1.0 / n_images
+        for i in xrange(d_pixels):
+            miu_pixel_distributions[k, i] *= (random_sample() * 0.5) + 0.25
+            normalize += miu_pixel_distributions[k, i]
 
+        for i in xrange(d_pixels):
+            miu_pixel_distributions[k, i] /= normalize
+    print miu_pixel_distributions, "\n------^miu---\n"
+
+    z_matrix = zeros((n_images, k_clusters), dtype=float64)
+
+    z_matrix[:, 0] = ones(n_images)
+    # seed(5)
     # print z_matrix
-    # pi_proportion_of_images = pi_proportion_of_images*1.0 / k_clusters
-    # occ_dict = count_occurences(pi_proportion_of_images)
+    for i in range(n_images):
+        shuffle(z_matrix[i])
+    # print sum(z_matrix, axis=1)
+    print z_matrix, "\n-----^z_atrix----\n"
 
-    # print pi_proportion_of_images
-    # print unique_rows
-    # M, C = do_k_medoid_clustering(distance_matrix, 10)
-    # print type(distance_matrix.shape[0])
-    # labels = np.zeros(distance_matrix.shape[0])
-    # print C
-    # print unique_rows
-    # for key in zip(C.keys()):
-    #     value_list = C[key[0]]
-    #     for value in value_list:
-    #         labels[value] = key[0]
-    #
-    # print silhouette_score_slow(distance_matrix, labels)
+    pi_proportion_of_images = sum(z_matrix, axis=0) * 1.0 / n_images
+    print pi_proportion_of_images, "\n-----pi^----\n"
+    # print "before"
+    # print z_matrix
+    for i in xrange(iter_count):
+        # Expectation step
+        z_matrix = expectation_step(z_matrix, pi_proportion_of_images, miu_pixel_distributions)
+
+        # Maximization step
+        miu_pixel_distributions = maximize_miu(miu_pixel_distributions, z_matrix, x_vectors)
+        # print miu_pixel_distributions, "\n------^miu_new---\n"
+        pi_proportion_of_images = maximize_pi(n_images, z_matrix, x_vectors, k_clusters, pi_proportion_of_images)
+
+    final_dict ={}
+    labels = find_labels(z_matrix)
+    for i in xrange(n_images):
+        try:
+            final_dict[labels[i]].append(x_vectors[i])
+        except:
+            final_dict[labels[i]] = []
+            final_dict[labels[i]].append(x_vectors[i])
+
+    for key in final_dict.keys():
+        for el in final_dict[key]:
+
+            print el, key
+
+        # print miu_pixel_distributions
+        # print "after",z_matrix
+        # print sum(z_matrix, axis=1)
+        # print pi_proportion_of_images
