@@ -34,7 +34,12 @@ def find_common_labelling(or_data, new_data):
     label_dict = {}
     or_labels = or_data.keys()
     for i, label in enumerate(or_labels):
-        label_dict[label] = argmax(sim_matrix[i])
+        row= sim_matrix[i]
+        points_to = argmax(row)
+        while points_to in label_dict.values():
+            row[points_to] = -1
+            points_to = argmax(row)
+        label_dict[label] = points_to
     return label_dict
 
 
@@ -46,6 +51,15 @@ def combine_old_new(labeling, original, new):
                 combined[key] += [old_list]
             else:
                 combined[key] = [old_list]
+
+        news = {}
+        if key == 2:
+            for el in combined[2]:
+                if str(el) in news.keys():
+                    news[str(el)] += 1
+                else:
+                    news[str(el)] = 1
+            print "halfway combined counts", news
         # print labeling
         # print labeling[key]
         # print new
@@ -54,6 +68,7 @@ def combine_old_new(labeling, original, new):
                 combined[key] += [new_list]
             else:
                 combined[key] = [new_list]
+
 
     return combined
 
@@ -105,15 +120,52 @@ def calculate_tp(labeling, original, new):
 
 def get_scoring_of_lost_el(labeling, original, new, k_cluster):
     combined = combine_old_new(labeling, original, new)
+    if k_cluster == 2:
+        print "Original", original[2]
+        print "new", new[labeling[2]]
+
+        news = {}
+        for el in new[labeling[2]]:
+            if str(el) in news.keys():
+                news[str(el)] += 1
+            else:
+                news[str(el)] = 1
+        print "new:",news
+
+        print "combined", combined[2]
+
+    news ={}
+    for el in combined[2]:
+        if str(el) in news.keys():
+            news[str(el)] += 1
+        else:
+            news[str(el)] = 1
+    rabd ={}
+    for el_master in new.values():
+        for el in el_master:
+            if str(el) in rabd.keys():
+                rabd[str(el)] += 1
+            else:
+                rabd[str(el)] = 1
+
+    if k_cluster == 2:
+        print "combined counts: ", news
+        # print rabd
     scores = {}
     for key in combined.keys():
         all_val = combined[key]
+
         for el in all_val:
+            # print "   ",k_cluster
             if el in original[k_cluster]:
+                if k_cluster == 2:
+                    print "   element in:", el
                 if scores.get(key):
                     scores[key] += 1
                 else:
                     scores[key] = 1
+                if k_cluster == 2:
+                    print "so score is:", scores[key]
     return scores
 
 
@@ -121,7 +173,7 @@ def calculate_fn(labeling, original, new):
     overal_sum = 0
     for key in original.keys():
         scoring_lost_el = get_scoring_of_lost_el(labeling, original, new, key)
-        print "->", scoring_lost_el, len(original[key]) * 2
+        print "->", scoring_lost_el, len(original[key]) * 2, len(new[labeling[key]])*2
         product = 0
         for cluster in scoring_lost_el.keys():
             if scoring_lost_el[cluster] > 1:
@@ -161,8 +213,8 @@ if __name__ == '__main__':
                 2: [[0, 0, 0, 1], [0, 0, 0, 0]],
                 3: [[0, 0, 1, 1]]}
     #
-    new = {0: [[1, 0, 1, 1], [1, 1, 1, 1]],
-           1: [[0, 0, 0, 1], [0, 0, 0, 0]],
+    new = {0: [[0, 0, 0, 0], [0, 0, 0, 1]],
+           1: [[1, 0, 1, 1], [1, 1, 1, 1]],
            2: [[0, 0, 1, 1]]}
     # labeling = {1: 1, 2: 2, 3: 3}
 

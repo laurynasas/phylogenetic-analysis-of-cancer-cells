@@ -123,7 +123,7 @@ def fill_the_gaps(final_dict, k):
             key = randint(0, len(final_dict.keys()) - 1)
             while key not in final_dict.keys():
                 key = randint(0, len(final_dict.keys()) - 1)
-            children = len(final_dict[randint(0,len(final_dict.keys())-1)])
+            children = len(final_dict[key])
             print "-->", children
 
             while children < 2 :
@@ -138,7 +138,7 @@ def fill_the_gaps(final_dict, k):
 
 if __name__ == '__main__':
     set_printoptions(threshold=nan)
-    directory = "./data/sample_data.csv"
+    directory = "./data/data2.txt"
     unique_rows, full_or_data = process_file(directory)
     global n_images, d_pixels, k_clusters, x_vectors
 
