@@ -1,7 +1,7 @@
-from numpy import *
 from numpy.random import *
 
 from k_medoid_clustering import *
+from rand_index import *
 
 
 def count_occurences(list):
@@ -116,10 +116,30 @@ def find_labels(z_matrix):
     return labels
 
 
+def fill_the_gaps(final_dict, k):
+
+    for i in xrange(k):
+        if i not in final_dict.keys():
+            key = randint(0, len(final_dict.keys()) - 1)
+            while key not in final_dict.keys():
+                key = randint(0, len(final_dict.keys()) - 1)
+            children = len(final_dict[randint(0,len(final_dict.keys())-1)])
+            print "-->", children
+
+            while children < 2 :
+                key = randint(0, len(final_dict.keys()) - 1)
+                while key not in final_dict.keys():
+                    key = randint(0, len(final_dict.keys()) - 1)
+                children = len(final_dict[key])
+            print "-->", children
+
+            final_dict[i] = [final_dict[key].pop(0)]
+    return final_dict
+
 if __name__ == '__main__':
     set_printoptions(threshold=nan)
     directory = "./data/sample_data.csv"
-    unique_rows = process_file(directory)
+    unique_rows, full_or_data = process_file(directory)
     global n_images, d_pixels, k_clusters, x_vectors
 
     x_vectors = []
@@ -129,14 +149,15 @@ if __name__ == '__main__':
         for i in xrange(rep):
             x_vectors.append(x_vector)
 
-    # x_vectors = [[1, 1, 1, 1], [0, 0, 0, 1], [0, 0, 1, 1], [1, 1, 1, 1], [1, 0, 1, 1]]
+    # full_or_data = {1:[[1, 0, 1, 1], [1, 1, 1, 1]], 2: [[0, 0, 0, 1], [0, 0, 0, 0]], 3: [[0, 0, 1, 1]]}
+    # x_vectors = [[1, 0, 1, 1], [0, 0, 0, 0], [0, 0, 0, 1], [0, 0, 1, 1], [1, 1, 1, 1]]
     x_vectors = array(x_vectors)
 
     n_images = sum(unique_rows[key] for key in unique_rows.keys())
     # n_images = len(x_vectors)
 
     d_pixels = len(unique_rows.keys()[0].split(","))
-    # d_pixels = 4
+    # d_pixels = len(x_vectors[0])
 
     k_clusters = 12
     lam = 5
@@ -153,7 +174,7 @@ if __name__ == '__main__':
 
         for i in xrange(d_pixels):
             miu_pixel_distributions[k, i] /= normalize
-    print miu_pixel_distributions, "\n------^miu---\n"
+    # print miu_pixel_distributions, "\n------^miu---\n"
 
     z_matrix = zeros((n_images, k_clusters), dtype=float64)
 
@@ -163,10 +184,26 @@ if __name__ == '__main__':
     for i in range(n_images):
         shuffle(z_matrix[i])
     # print sum(z_matrix, axis=1)
-    print z_matrix, "\n-----^z_atrix----\n"
+    # print z_matrix, "\n-----^z_atrix----\n"
+
+    init_labels = find_labels(z_matrix)
+    init_dic = {}
+
+    for i in xrange(n_images):
+        try:
+            init_dic[init_labels[i]].append(x_vectors[i])
+        except:
+            init_dic[init_labels[i]] = []
+            init_dic[init_labels[i]].append(x_vectors[i])
+
+    for key in init_dic.keys():
+        for el in init_dic[key]:
+            print el, key
+
+    print "\n-------------------------------\n"
 
     pi_proportion_of_images = sum(z_matrix, axis=0) * 1.0 / n_images
-    print pi_proportion_of_images, "\n-----pi^----\n"
+    # print pi_proportion_of_images, "\n-----pi^----\n"
     # print "before"
     # print z_matrix
     for i in xrange(iter_count):
@@ -178,21 +215,25 @@ if __name__ == '__main__':
         # print miu_pixel_distributions, "\n------^miu_new---\n"
         pi_proportion_of_images = maximize_pi(n_images, z_matrix, x_vectors, k_clusters, pi_proportion_of_images)
 
-    final_dict ={}
+    final_dict = {}
     labels = find_labels(z_matrix)
     for i in xrange(n_images):
         try:
-            final_dict[labels[i]].append(x_vectors[i])
+            final_dict[labels[i]].append(x_vectors[i].tolist())
         except:
-            final_dict[labels[i]] = []
-            final_dict[labels[i]].append(x_vectors[i])
+            final_dict[labels[i]] = [x_vectors[i].tolist()]
 
     for key in final_dict.keys():
         for el in final_dict[key]:
-
+            # pass
             print el, key
 
-        # print miu_pixel_distributions
-        # print "after",z_matrix
-        # print sum(z_matrix, axis=1)
-        # print pi_proportion_of_images
+    full_dict = fill_the_gaps(final_dict, k)
+    print "Rand index: ", rand_index(full_or_data, full_dict)
+    # labeling =  find_common_labelling(full_or_data, final_dict)
+    # calculate_tp_fp(labeling,full_or_data, full_dict)
+
+    # print miu_pixel_distributions
+    # print "after",z_matrix
+    # print sum(z_matrix, axis=1)
+    # print pi_proportion_of_images

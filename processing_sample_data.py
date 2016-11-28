@@ -4,18 +4,25 @@ from single_linkage_clustering import *
 def process_file(dir):
     sample_data_file = open(dir, 'rw+')
     unique_rows = {}
+    full_data_dict = {}
     sample_data_file.readline()
 
     for line in sample_data_file:
         line = line[:-1]
+        label = int(line.split(",")[-1])
         line = ','.join([str(x) for x in (line.split(",")[:-1])])
-
+        # print "label",label
+        # label = int(line.split(",")[-1])
+        if full_data_dict.get(label):
+            full_data_dict[label] += [map(int, line.split(","))]
+        else:
+            full_data_dict[label] = [map(int, line.split(","))]
         if line in unique_rows.keys():
             unique_rows[line] += 1
         else:
             unique_rows[line] = 1
 
-    return unique_rows
+    return unique_rows, full_data_dict
 
 
 def diff_char_string(a, b):
