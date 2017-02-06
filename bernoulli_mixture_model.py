@@ -1,7 +1,11 @@
+import itertools
+
 from numpy.random import *
 
 from k_medoid_clustering import *
 from rand_index import *
+from datetime import datetime
+RESTRICTED_CHARS = ["NA\n", "NA"]
 
 
 def count_occurences(list):
@@ -26,7 +30,9 @@ def bernoulli_distro(p, x):
 def prob_x_generated_by_cluster_k(x_vector, miu_pixel_distributions, k_cluster):
     product = 1
     for i in xrange(len(x_vector)):
-        product *= bernoulli_distro(miu_pixel_distributions[k_cluster][i], x_vector[i])
+        if x_vector[i] not in RESTRICTED_CHARS:
+            pwr = int(x_vector[i])
+            product *= bernoulli_distro(miu_pixel_distributions[k_cluster][i], pwr)
     return product
 
 
@@ -93,7 +99,10 @@ def maximize_miu(miu_pixel_distributions, z_matrix, x_vectors):
         for j in xrange(d_pixels):
             N_m = N_m_effective_number_of_images(z_matrix, m)
 
-            total = sum(x_vectors[n, j] * z_matrix[n, m] for n in xrange(n_images))
+            total = 0
+            for n in xrange(n_images):
+                if x_vectors[n, j] not in RESTRICTED_CHARS:
+                    total += int(x_vectors[n, j]) * z_matrix[n, m]
 
             miu_pixel_distributions[m, j] = total * 1.0 / N_m
 
@@ -117,35 +126,39 @@ def find_labels(z_matrix):
 
 
 def fill_the_gaps(final_dict, k):
-
     for i in xrange(k):
         if i not in final_dict.keys():
             key = randint(0, len(final_dict.keys()) - 1)
             while key not in final_dict.keys():
                 key = randint(0, len(final_dict.keys()) - 1)
             children = len(final_dict[key])
-            print "-->", children
+            # print "-->", children
 
-            while children < 2 :
+            while children < 2:
                 key = randint(0, len(final_dict.keys()) - 1)
                 while key not in final_dict.keys():
                     key = randint(0, len(final_dict.keys()) - 1)
                 children = len(final_dict[key])
-            print "-->", children
+            # print "-->", children
 
             final_dict[i] = [final_dict[key].pop(0)]
     return final_dict
 
+
 if __name__ == '__main__':
     set_printoptions(threshold=nan)
-    directory = "./data/data2.txt"
-    unique_rows, full_or_data = process_file(directory)
+    # directory = "./data/data2.txt"
+    # unique_rows, full_or_data = process_file(directory)
+
+    directory = "./data/hou/snv.csv"
+    unique_rows, full_or_data = process_single_cell_data_file(directory)
+
     global n_images, d_pixels, k_clusters, x_vectors
 
     x_vectors = []
     for key in unique_rows.keys():
         rep = unique_rows[key]
-        x_vector = [int(el) for el in key.split(",")]
+        x_vector = [str(el) for el in key.split(",")]
         for i in xrange(rep):
             x_vectors.append(x_vector)
 
@@ -196,9 +209,9 @@ if __name__ == '__main__':
             init_dic[init_labels[i]] = []
             init_dic[init_labels[i]].append(x_vectors[i])
 
-    for key in init_dic.keys():
-        for el in init_dic[key]:
-            print el, key
+    # for key in init_dic.keys():
+    #     for el in init_dic[key]:
+    #         print el, key
 
     print "\n-------------------------------\n"
 
@@ -227,13 +240,46 @@ if __name__ == '__main__':
         for el in final_dict[key]:
             # pass
             print el, key
+    full_dict = fill_the_gaps(final_dict, k_clusters)
 
-    full_dict = fill_the_gaps(final_dict, k)
-    print "Rand index: ", rand_index(full_or_data, full_dict)
-    # labeling =  find_common_labelling(full_or_data, final_dict)
-    # calculate_tp_fp(labeling,full_or_data, full_dict)
+
+    def product_gen(n):
+        for r in itertools.count(1):
+            for x in itertools.product(n, repeat=r):
+                yield "".join(x)
+
+
+    # from parsimony_tree_builder import get_genotypes_from_clusters
+    # f = open('./data/genotype.phy', 'w')
+    # print full_dict
+    # genotypes = get_genotypes_from_clusters(full_dict, d_pixels)
+    # print '--->', full_dict.keys(),len(genotypes)
+    # str_genotype = ''
+    # for label, gen in zip(product_gen(string.ascii_uppercase), genotypes):
+    #     str1 = ''.join([str(el) for el in gen])
+    #     str_genotype += str(label).ljust(10)+str1+'\n'
+    # f.write(str(len(genotypes))+' '+str(d_pixels)+'\n')
+    # f.write(str_genotype)
+    # f.close()
+
+
+    # print "Rand index: ", rand_index(full_or_data, full_dict)
+    # labeling = find_common_labelling(full_or_data, final_dict)
+    # calculate_tp_fp(labeling, full_or_data, full_dict)
 
     # print miu_pixel_distributions
     # print "after",z_matrix
     # print sum(z_matrix, axis=1)
     # print pi_proportion_of_images
+
+    for key in final_dict.keys():
+        for el in final_dict[key]:
+            # pass
+            print el, key
+    target = open("./data/hou/clustered_data/Bernouli_mixture_model_" + str(datetime.now()) + ".txt", 'w+')
+    for key in final_dict.keys():
+        for el in final_dict[key]:
+            target.write(str(key) + ' | ' + ','.join(str(x) for x in el))
+
+
+    target.close()
