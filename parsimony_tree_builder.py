@@ -1,8 +1,10 @@
 from numpy import array, zeros, append, round, int8
 from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor, ParsimonyTreeConstructor, ParsimonyScorer, NNITreeSearcher
-from Bio.Phylo import draw_ascii
+from Bio.Phylo import draw_ascii,draw_graphviz,to_networkx
 from Bio import AlignIO
 import operator
+import networkx as nx
+
 
 def get_genotypes_from_clusters(cluster_dict, vector_size):
     genotype = []
@@ -39,5 +41,6 @@ if __name__ == '__main__':
     constructor_parsimony = ParsimonyTreeConstructor(searcher)
     pars_tree = constructor_parsimony.build_tree(aln)
     print(pars_tree)
-    draw_ascii(pars_tree)
+    networkx_tree = to_networkx(pars_tree)
+    draw_graphviz(pars_tree)
 

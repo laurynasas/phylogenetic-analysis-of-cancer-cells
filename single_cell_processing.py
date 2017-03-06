@@ -25,7 +25,7 @@ def calc_distance_matrix_from_file(dir):
         matrix += [distance_row]
     return matrix
 
-def plot_2D_similarity_matrix(matrix):
+def plot_2D_similarity_matrix(matrix, method="", dataset="", no_cl="", data_type=""):
     from matplotlib import mpl, pyplot
     import numpy as np
 
@@ -45,12 +45,13 @@ def plot_2D_similarity_matrix(matrix):
     # make a color bar
     pyplot.colorbar(img2, cmap=cmap2)
     fig = pyplot.figure(1)
+    fig.savefig("/home/laurynas/workspace/individual_project/data/clutsering_analysis_images/"+str(data_type)+"/"+str(method)+"_"+str(dataset)+"_"+str(no_cl)+".png", bbox_inches='tight')
+    # fig.savefig("image2.png")
+    # pyplot.show()
 
-    fig.savefig("image2.png")
-    pyplot.show()
 
 if __name__ == "__main__":
-    dir = "/home/laurynas/workspace/individual_project/data/hou/clustered_data/Bernouli_mixture_model_2017-02-06 16:06:42.239805.txt"
+    dir = "/home/laurynas/workspace/individual_project/data/hou/clustered_data/k_medoid_clustering_sample_data2017-02-07 10:54:12.394001.txt"
     matrix = calc_distance_matrix_from_file(dir)
     plot_2D_similarity_matrix(matrix)
     # target = open("./data/hou/clustered_data/Bernouli_mixture_model_2017-02-06 16:06:42.239805_matrix.txt", 'w+')

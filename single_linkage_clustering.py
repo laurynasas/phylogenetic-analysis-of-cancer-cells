@@ -1,5 +1,39 @@
 import numpy as np
+from scipy.cluster.hierarchy import fcluster,linkage
+from processing_sample_data import find_distance_matrix
+from silhouette_score_implementation import silhouette_score_slow
+from rand_index import rand_index
+from sklearn.metrics import adjusted_rand_score,silhouette_score
+from single_cell_processing import plot_2D_similarity_matrix
 
+class DataNode:
+    def __init__(self, vector, cluster_label):
+        self.vector = vector
+        self.cluster_label = cluster_label
+
+def read_simulated_data_file(dir):
+    simulated_data_file = open(dir, 'rw+')
+    unique_rows = {}
+    full_data_dict = {}
+    full_info =[]
+    for line in simulated_data_file:
+        # line = line[:-1]
+        # label = int(line.split(",")[-1])
+        line = line.split(" | ")
+        cluster_label = int(line[1])
+        vector = line[0][1:-1]
+        full_info.append(DataNode(vector,cluster_label))
+
+        if full_data_dict.get(cluster_label):
+            full_data_dict[cluster_label] += [map(int, vector.split(","))]
+        else:
+            full_data_dict[cluster_label] = [map(int, vector.split(","))]
+        if vector in unique_rows.keys():
+            unique_rows[vector] += 1
+        else:
+            unique_rows[vector] = 1
+
+    return unique_rows, full_data_dict, full_info
 
 def find_min_corner(distance_matrix):
     # print distance_matrix
@@ -60,3 +94,74 @@ def single_linkage_clustering(distance_matrix):
         if location != (-1, -1):
             (distance_matrix, clusters) = merge(distance_matrix, location, clusters)
     return clusters
+def get_label_of_cluster(vector, full_dict):
+    vector = map(int, vector.split(","))
+    for key in full_dict.keys():
+        # print vector?S, full_dict[key]
+        if vector in full_dict[key]:
+            return key
+
+if __name__ == "__main__":
+    sample_name = "analysis_20_20_0.01_1000"
+    dir = "/home/laurynas/workspace/individual_project/simulated_data/"+sample_name+".txt"
+    n_times = 10
+
+    unique_rows, full_data_dict, full_info = read_simulated_data_file(dir)
+    distance_matrix = np.matrix(find_distance_matrix(unique_rows))
+    # print distance_matrix
+    true_labels = []
+    for key in unique_rows.keys():
+        label = get_label_of_cluster(vector=key, full_dict = full_data_dict)
+        for _ in range(unique_rows[key]):
+            true_labels.append(label)
+
+    silhoutes_scores =[]
+    rands = []
+    import timeit
+
+    start = timeit.default_timer()
+    for i in range(n_times):
+        print i
+        labels = fcluster(linkage(distance_matrix, method='complete'), t=max(true_labels), criterion='maxclust')
+        # print labels-1, unique_rows.keys()
+        # print unique_rows.keys()
+        distribution= {}
+        for key, label in zip(unique_rows.keys(),labels-1):
+            if label in distribution.keys():
+                distribution[label] += [key]
+            else:
+                distribution[label] = [key]
+        new_data = {}
+
+        for cluster_label in labels-1:
+            if new_data.get(cluster_label):
+                new_data[cluster_label] += [map(int, unique_rows.keys()[cluster_label].split(","))]
+            else:
+                new_data[cluster_label] = [map(int, unique_rows.keys()[cluster_label].split(","))]
+
+
+        # for key in distribution:
+        #     for el in distribution[key]:
+        #         for _ in xrange(unique_rows[str(el)]):
+        #
+        #             print "[",str(el),"]", " | ", key
+
+        vectors =[distribution[key] for key in distribution.keys()]
+        # print distance_matrix
+        # distance_matrix = np.ones((len(labels),len(labels)))
+        sil = silhouette_score(distance_matrix,labels-1, metric="precomputed")
+        silhoutes_scores.append(sil)
+        # print "predicted silhoutte score", sil
+        # print rand_index(full_data_dict, new_data)
+        labels_predicted = labels-1
+        # print true_labels,labels_predicted
+        rand = adjusted_rand_score(true_labels, labels_predicted)
+        rands.append(rand)
+        # print "Adjusted rand: ", rand
+        # print "Will be saving the image", plot_2D_similarity_matrix(distance_matrix,"SLC","gdrive_"+sample_name,data_type="simulated")
+    stop = timeit.default_timer()
+    print "----SUMMARY----------"
+    print "True Silhoutte score", silhouette_score(distance_matrix,true_labels, metric="precomputed")
+    print "Average silhoute score", np.mean(np.asarray(silhoutes_scores))
+    print "Average Adjusted rand index", np.mean(np.asarray(rands))
+    print "Time / sample", (stop - start)/float(n_times)

@@ -139,7 +139,11 @@ def _intra_cluster_distance_slow(X, labels, metric, i):
     indices = np.where(labels == labels[i])[0]
     if len(indices) == 0:
         return 0.
-    a = np.mean([metric(X[i], X[j]) for j in indices if not i == j])
+    # print metric
+    if metric is None:
+        a = np.mean([X[i,j] for j in indices if not i == j])
+    else:
+        a = np.mean([metric(X[i], X[j]) for j in indices if not i == j])
     return a
 
 
@@ -162,9 +166,15 @@ def _nearest_cluster_distance_slow(X, labels, metric, i):
         Mean nearest-cluster distance for sample i
     """
     label = labels[i]
-    b = np.min(
+    if metric is None:
+        b = np.min(
             [np.mean(
-                [metric(X[i], X[j]) for j in np.where(labels == cur_label)[0]]
+                [X[i,j] for j in np.where(labels == cur_label)[0]]
             ) for cur_label in set(labels) if not cur_label == label])
+    else:
+        b = np.min(
+                [np.mean(
+                    [metric(X[i], X[j]) for j in np.where(labels == cur_label)[0]]
+                ) for cur_label in set(labels) if not cur_label == label])
     return b
 
