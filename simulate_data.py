@@ -78,17 +78,26 @@ def populate_cluster_with_errorous_data(orig_data, cluster_sizes, error):
     return labeled_data
 
 
-k_clusters = 20
-len_vectors = 20
+k_clusters = 5
+len_vectors = 5
 error_perct = 0.1
-dataset_size = 1000
+dataset_size = 20
 
 original_clusters = generate_original_clusters(k_clusters, len_vectors)
 
 cluster_sizes = get_cluster_sizes(k_clusters, dataset_size)
 populated =  populate_cluster_with_errorous_data(original_clusters, cluster_sizes, error_perct)
 
-target = open("./simulated_data/analysis_"+str(len_vectors)+"_"+str(k_clusters)+"_"+str(error_perct)+"_"+str(dataset_size)+".txt", 'w+')
+print original_clusters
+target = open("./simulated_data/analysis_genotypes_"+str(len_vectors)+"_"+str(k_clusters)+"_"+str(error_perct)+"_"+str(dataset_size)+".txt", 'w+')
+for genotype in original_clusters:
+    target.write(",".join(map(str,genotype)) +"\n")
+
+target.close()
+
+
+print original_clusters
+target = open("./simulated_data/analysis_for_genotypes_"+str(len_vectors)+"_"+str(k_clusters)+"_"+str(error_perct)+"_"+str(dataset_size)+".txt", 'w+')
 for key in populated.keys():
     for el in populated[key]:
         target.write(str(el) + ' | ' +str(key)+"\n")
