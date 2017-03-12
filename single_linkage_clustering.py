@@ -5,6 +5,7 @@ from silhouette_score_implementation import silhouette_score_slow
 from rand_index import rand_index
 from sklearn.metrics import adjusted_rand_score,silhouette_score
 from single_cell_processing import plot_2D_similarity_matrix
+import parsimony_tree_builder
 
 class DataNode:
     def __init__(self, vector, cluster_label):
@@ -102,9 +103,9 @@ def get_label_of_cluster(vector, full_dict):
             return key
 
 if __name__ == "__main__":
-    sample_name = "analysis_20_20_0.01_1000"
+    sample_name = "populated_true_genotypes_10_10_0.01_100"
     dir = "/home/laurynas/workspace/individual_project/simulated_data/"+sample_name+".txt"
-    n_times = 10
+    n_times = 1
 
     unique_rows, full_data_dict, full_info = read_simulated_data_file(dir)
     distance_matrix = np.matrix(find_distance_matrix(unique_rows))
@@ -118,11 +119,10 @@ if __name__ == "__main__":
     silhoutes_scores =[]
     rands = []
     import timeit
-
     start = timeit.default_timer()
     for i in range(n_times):
         print i
-        labels = fcluster(linkage(distance_matrix, method='complete'), t=max(true_labels), criterion='maxclust')
+        labels = fcluster(linkage(distance_matrix, method='complete'), t=15, criterion='maxclust')
         # print labels-1, unique_rows.keys()
         # print unique_rows.keys()
         distribution= {}
@@ -138,7 +138,16 @@ if __name__ == "__main__":
                 new_data[cluster_label] += [map(int, unique_rows.keys()[cluster_label].split(","))]
             else:
                 new_data[cluster_label] = [map(int, unique_rows.keys()[cluster_label].split(","))]
-
+        new_data_formatetd = {}
+        for key,value in new_data.items():
+            new_value=[','.join(map(str,el)) for el in value]
+            new_data_formatetd[key] = new_value
+        # print new_data_formatetd
+        ready_genotype = parsimony_tree_builder.get_genotypes_from_clusters(new_data_formatetd,10)
+        print ready_genotype
+        sample_name = "predicted_SLC_ready_genotypes_10_10_0.01_100"
+        dir = "/home/laurynas/workspace/individual_project/simulated_data/" + sample_name + ".phy"
+        parsimony_tree_builder.write_genotype_to_file(dir, ready_genotype)
 
         # for key in distribution:
         #     for el in distribution[key]:

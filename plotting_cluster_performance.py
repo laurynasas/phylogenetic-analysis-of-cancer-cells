@@ -65,7 +65,7 @@ ax.plot([1, 2-2*width], [threshold_m1, threshold_m1], "k--")
 threshold_l1 =0.8643318013
 ax.plot([2, 3-2*width], [threshold_l1, threshold_l1], "k--")
 
-ax.legend((rects1[0], rects2[0], rects3[0], thr), ('SLC (Hierarchical)', 'k-means', 'Bernoulli mixture', "Max score from true data"))
+ax.legend((rects1[0], rects2[0], rects3[0], thr), ('Bernoulli mixture', 'SLC (Hierarchical)', 'k-means', "Max score from true data"))
 
 autolabel(rects1,move_up=True)
 autolabel(rects2)
