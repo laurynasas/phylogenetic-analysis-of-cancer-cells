@@ -72,10 +72,9 @@ class k_medoid:
     def do_k_means_using_sklearn(self):
         distance_matrix = self.get_distance_matrix()
         k = k_means_.KMeans(n_clusters=self.k).fit(distance_matrix)
-        print k.labels_
         self.sk_learn_instance = k
         full_dict = {}
-        # print "-->",self.unique_rows.values()
+
         for label, data_object in zip(k.labels_, self.full_info):
             if label not in full_dict.keys():
                 full_dict[label] = [data_object.vector]
