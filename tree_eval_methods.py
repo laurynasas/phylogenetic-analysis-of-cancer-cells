@@ -60,8 +60,8 @@ class Pipeline:
         self._get_tree_distances(true_tree=True)
         self._get_tree_distances()
 
-        print self._true_tree_distance_matrix
-        print self._tree_distance_matrix
+        print np.matrix(self._true_tree_distance_matrix)
+        print np.matrix(self._tree_distance_matrix)
         self._get_diff_vector()
 
         distance = self._calculate_euclidiean_distance()
@@ -91,13 +91,25 @@ class Pipeline:
     def _get_tree_distances(self, true_tree=False):
         if true_tree:
             text_repres = self._true_tree.__str__()
-            tree = BTree()
+            # if self.tree_method == "pars":
+            #     Phylo.draw_graphviz(self._true_tree, prog="dot")
+            # else:
+            #     Phylo.draw_graphviz(self._true_tree, prog="twopi")
+            # plt.show()
         else:
             text_repres = self._tree.__str__()
-            if self.tree_method == "nj" or self.tree_method == "upgma":
-                tree = NTree()
-            elif self.tree_method == "pars":
-                tree = BTree()
+            # if self.tree_method == "pars":
+            #     Phylo.draw_graphviz(self._tree, prog="dot")
+            # else:
+            #     Phylo.draw_graphviz(self._tree, prog="twopi")
+            # plt.show()
+
+        if self.tree_method == "nj" or self.tree_method == "upgma":
+            tree = NTree()
+        elif self.tree_method == "pars":
+            tree = BTree()
+
+
 
         tree.build_tree(lines=text_repres)
 
@@ -302,7 +314,7 @@ class Pipeline:
 raw_data_dir = "/home/laurynas/workspace/individual_project/simulated_data/populated_true_genotypes_10_10_0.01_100.txt"
 true_genotype_dir = "/home/laurynas/workspace/individual_project/simulated_data/true_genotypes_10_10_0.01_100.txt"
 clustering_method = "bmm"
-tree_method = "nj"
+tree_method = "pars"
 number_of_clusters = 10
 vector_size = 10
 write_adjusted_true_gen_dir = "/home/laurynas/workspace/individual_project/simulated_data/slc_nj_pipe_adjusted_true_gen.phy"
