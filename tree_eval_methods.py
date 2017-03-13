@@ -10,6 +10,8 @@ from n_tree import NTree
 from k_medoid_clustering import *
 from Bio import Phylo
 import pylab as plt
+
+
 class Pipeline:
     def __init__(self, raw_data_dir, true_genotypes_dir, clustering_method, tree_method, number_of_clusters,
                  vector_size, write_adjusted_true_gen_dir, write_predicted_gen_dir, bbm_number_of_iterations=10,
@@ -119,7 +121,6 @@ class Pipeline:
             self._tree_distance_matrix = tree_distance_matrix
         else:
             self._true_tree_distance_matrix = tree_distance_matrix
-
 
     def _do_parsimony(self, true_tree=False):
         if true_tree:
@@ -286,24 +287,27 @@ class Pipeline:
         self._clustered_data_dict = new_data_formatetd
 
     def _do_k_means(self):
-        k_means_instance = k_medoid(self.no_clusters, self.unique_rows, self.full_data_dict, self.full_info,
-                                    self.vector_size)
+        predefined_kwargs = {"number_of_clusters": self.no_clusters, "unique_rows": self.unique_rows,
+                             "full_data_dict": self.full_data_dict, "full_info": self.full_info,
+                             "vector_size": self.vector_size}
+        k_means_instance = k_medoid(**predefined_kwargs)
+
         self._clustered_data_dict = k_means_instance.do_k_means_using_sklearn()
 
     def _do_bmm(self):
-        bmm = BMM(self.unique_rows, self.full_data_dict, self.full_info, self.number_of_iterations)
+        bmm = BMM(self.no_clusters, self.unique_rows, self.full_data_dict, self.full_info, self.number_of_iterations)
         self._clustered_data_dict = bmm.do_clustering()
 
 
 raw_data_dir = "/home/laurynas/workspace/individual_project/simulated_data/populated_true_genotypes_10_10_0.01_100.txt"
 true_genotype_dir = "/home/laurynas/workspace/individual_project/simulated_data/true_genotypes_10_10_0.01_100.txt"
-clustering_method = "slc"
-tree_method = ""
+clustering_method = "bmm"
+tree_method = "nj"
 number_of_clusters = 10
 vector_size = 10
 write_adjusted_true_gen_dir = "/home/laurynas/workspace/individual_project/simulated_data/slc_nj_pipe_adjusted_true_gen.phy"
 write_predicted_gen_dir = "/home/laurynas/workspace/individual_project/simulated_data/slc_nj_pipe_predicted_gen.phy"
 
-
-slc_nj_pipe = Pipeline(raw_data_dir,true_genotype_dir,clustering_method,tree_method,number_of_clusters,vector_size,write_adjusted_true_gen_dir,write_predicted_gen_dir)
+slc_nj_pipe = Pipeline(raw_data_dir, true_genotype_dir, clustering_method, tree_method, number_of_clusters, vector_size,
+                       write_adjusted_true_gen_dir, write_predicted_gen_dir)
 print slc_nj_pipe.run_pipe()

@@ -8,9 +8,10 @@ from rand_index import *
 
 class BMM:
 
-    def __init__(self,unique_rows, full_data_dict, full_info, number_of_iterations, distance_matrix=None):
+    def __init__(self,k_clusters, unique_rows, full_data_dict, full_info, number_of_iterations, distance_matrix=None):
         self.RESTRICTED_CHARS = ["NA\n", "NA"]
         self.unique_rows = unique_rows
+        self.k_clusters = k_clusters
         self.full_data_dict = full_data_dict
         self.full_info = full_info
         self.distance_matrix = distance_matrix
@@ -48,11 +49,11 @@ class BMM:
 
 
     def likelihood_of_single_training_image(self,x_vector, pi_proportion_of_images, miu_pixel_distributions):
-        k_clusters = len(pi_proportion_of_images)
+        self.k_clusters = len(pi_proportion_of_images)
 
         likelihood = 0
 
-        for k_cluster in xrange(k_clusters):
+        for k_cluster in xrange(self.k_clusters):
             likelihood += pi_proportion_of_images[k_cluster] * self.prob_x_generated_by_cluster_k(x_vector,
                                                                                              miu_pixel_distributions,
                                                                                              k_cluster)
@@ -63,11 +64,11 @@ class BMM:
     def likelihood_complete_data(self,pi_proportion_of_images, miu_pixel_distributions, x_vectors, z_matrix):
         n_images, d_pixels = x_vectors.shape
 
-        k_clusters = len(pi_proportion_of_images)
+        self.k_clusters = len(pi_proportion_of_images)
 
         likelihood = 1
         for n in xrange(n_images):
-            for k in xrange(k_clusters):
+            for k in xrange(self.k_clusters):
                 likelihood *= power(
                     pi_proportion_of_images[k] * self.prob_x_generated_by_cluster_k(x_vectors[n], miu_pixel_distributions, k),
                     z_matrix[n, k])
@@ -81,10 +82,10 @@ class BMM:
     def expectation_step(self,z_matrix, pi_proportion_of_images, miu_pixel_distributions):
         for n in xrange(self.n_images):
             x_vector = self.x_vectors[n]
-            for k in xrange(k_clusters):
+            for k in xrange(self.k_clusters):
                 nom = pi_proportion_of_images[k] * self.prob_x_generated_by_cluster_k(x_vector, miu_pixel_distributions, k)
                 den = 0
-                for m in xrange(k_clusters):
+                for m in xrange(self.k_clusters):
                     den += pi_proportion_of_images[m] * self.prob_x_generated_by_cluster_k(x_vector, miu_pixel_distributions, m)
 
                 nom = nan_to_num(nom)
@@ -102,7 +103,7 @@ class BMM:
 
 
     def maximize_miu(self,miu_pixel_distributions, z_matrix, x_vectors):
-        for m in xrange(k_clusters):
+        for m in xrange(self.k_clusters):
             for j in xrange(self.d_pixels):
                 N_m = self.N_m_effective_number_of_images(z_matrix, m)
 
@@ -117,7 +118,7 @@ class BMM:
 
 
     def maximize_pi(self,n_images, z_matrix, x_vectors, k_clusters, pi_proportion_of_images):
-        for m in xrange(k_clusters):
+        for m in xrange(self.k_clusters):
             N_m = self.N_m_effective_number_of_images(z_matrix, m)
             pi_proportion_of_images[m] = N_m * 1.0 / n_images
 
@@ -156,15 +157,15 @@ class BMM:
     def do_clustering(self):
 
         x_vectors = []
-        for key in unique_rows.keys():
-            rep = unique_rows[key]
+        for key in self.unique_rows.keys():
+            rep = self.unique_rows[key]
             x_vector = [str(el) for el in key.split(",")]
             for i in xrange(rep):
                 x_vectors.append(x_vector)
 
         self.x_vectors = array(x_vectors)
-        self.n_images = sum(unique_rows[key] for key in unique_rows.keys())
-        self.d_pixels = len(unique_rows.keys()[0].split(","))
+        self.n_images = sum(self.unique_rows[key] for key in self.unique_rows.keys())
+        self.d_pixels = len(self.unique_rows.keys()[0].split(","))
 
 
 
@@ -179,9 +180,9 @@ class BMM:
         import timeit
         start = timeit.default_timer()
         for i in range(self.number_of_iterations):
-            miu_pixel_distributions = ones((k_clusters, self.d_pixels))
+            miu_pixel_distributions = ones((self.k_clusters, self.d_pixels))
 
-            for k in xrange(k_clusters):
+            for k in xrange(self.k_clusters):
                 normalize = 0
 
                 for i in xrange(self.d_pixels):
@@ -191,7 +192,7 @@ class BMM:
                 for i in xrange(self.d_pixels):
                     miu_pixel_distributions[k, i] /= normalize
 
-            z_matrix = zeros((self.n_images, k_clusters), dtype=float64)
+            z_matrix = zeros((self.n_images, self.k_clusters), dtype=float64)
 
             z_matrix[:, 0] = ones(self.n_images)
             for i in range(self.n_images):
@@ -215,7 +216,7 @@ class BMM:
 
                 # Maximization step
                 miu_pixel_distributions = self.maximize_miu(miu_pixel_distributions, z_matrix, x_vectors)
-                pi_proportion_of_images = self.maximize_pi(self.n_images, z_matrix, x_vectors, k_clusters,
+                pi_proportion_of_images = self.maximize_pi(self.n_images, z_matrix, x_vectors, self.k_clusters,
                                                       pi_proportion_of_images)
 
             final_dict = {}
@@ -226,9 +227,9 @@ class BMM:
 
             for i in xrange(self.n_images):
                 try:
-                    final_dict[labels[i]].append(",".join(str(el)) for el in self.x_vectors[i].tolist())
+                    final_dict[labels[i]].append(",".join(str(el) for el in self.x_vectors[i]))
                 except:
-                    final_dict[labels[i]] = [",".join(str(el)) for el in self.x_vectors[i].tolist()]
+                    final_dict[labels[i]] = [",".join(str(el) for el in self.x_vectors[i])]
             predicted_labels = asarray(predicted_labels)
             if len(np.unique(predicted_labels)) == 1:
                 continue
@@ -256,7 +257,7 @@ if __name__ == '__main__':
     sample_name = "analysis_10_10_0.01_100"
     dir = "/home/laurynas/workspace/individual_project/simulated_data/"+sample_name+".txt"
     # ------------------------------------------------------------------------------------------------
-    k_clusters = 10
+    self.k_clusters = 10
     lam = 5
     loop_times = 1
     unique_rows, full_data_dict, full_info = read_simulated_data_file(dir)
