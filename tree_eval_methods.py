@@ -5,9 +5,11 @@ from numpy import int8
 from scipy.cluster.hierarchy import fcluster, linkage
 
 from bernoulli_mixture_model import BMM
+from binary_tree import BTree
+from n_tree import NTree
 from k_medoid_clustering import *
-
-
+from Bio import Phylo
+import pylab as plt
 class Pipeline:
     def __init__(self, raw_data_dir, true_genotypes_dir, clustering_method, tree_method, number_of_clusters,
                  vector_size, write_adjusted_true_gen_dir, write_predicted_gen_dir, bbm_number_of_iterations=10,
@@ -53,15 +55,70 @@ class Pipeline:
             self._build_distance_tree(tree_name="upgma")
             self._build_distance_tree(tree_name="upgma", true_tree=True)
 
-        self._true_distance_vector = self._get_diff_vector(true_tree=True)
-        self._predicted_distance_vector = self._get_diff_vector()
+        self._get_tree_distances(true_tree=True)
+        self._get_tree_distances()
+
+        print self._true_tree_distance_matrix
+        print self._tree_distance_matrix
+        self._get_diff_vector()
 
         distance = self._calculate_euclidiean_distance()
 
         return distance
 
+    def _calculate_euclidiean_distance(self):
+        sum = 0
+        for x, y in zip(self.vector_predicted_diff, self.vector_true_diff):
+            sum += abs(x - y) ** 2
+        return sum ** (1.0 / 2)
+
     def _get_diff_vector(self):
-        
+        self.vector_predicted_diff = self._get_vector(self._tree_distance_matrix)
+        self.vector_true_diff = self._get_vector(self._true_tree_distance_matrix)
+
+    def _get_vector(self, matrix):
+        vector = []
+        for row in matrix:
+            for el in row:
+                if el != 0:
+                    vector.append(el)
+                else:
+                    break
+        return vector
+
+    def _get_tree_distances(self, true_tree=False):
+        if true_tree:
+            text_repres = self._true_tree.__str__()
+            tree = BTree()
+        else:
+            text_repres = self._tree.__str__()
+            if self.tree_method == "nj" or self.tree_method == "upgma":
+                tree = NTree()
+            elif self.tree_method == "pars":
+                tree = BTree()
+
+        tree.build_tree(lines=text_repres)
+
+        all_nodes = tree.get_all_nodes()
+        tree_distance_matrix = []
+
+        for outter_n in all_nodes.values():
+            if "Inner" in outter_n.name:
+                continue
+            row = []
+            for inner_n in all_nodes.values():
+                if "Inner" in inner_n.name:
+                    continue
+                if outter_n == inner_n:
+                    row.append(0)
+                else:
+                    row.append(tree.get_distance_between_nodes(outter_n, inner_n))
+            tree_distance_matrix.append(row)
+
+        if true_tree:
+            self._tree_distance_matrix = tree_distance_matrix
+        else:
+            self._true_tree_distance_matrix = tree_distance_matrix
 
 
     def _do_parsimony(self, true_tree=False):
@@ -182,7 +239,7 @@ class Pipeline:
 
         genotypes = []
         for line in lines:
-            genotypes.append(map(int, line.split(",")))
+            genotypes.append(line[:-1])
         self.true_genotypes = genotypes
 
     def _find_number_of_diff_chars_in_string(self, a, b):
@@ -205,6 +262,7 @@ class Pipeline:
         for el in genotype:
             sums += [sum(el)]
             string_genotype += [",".join(str(e) for e in el)]
+
         sorted_sums, string_genotype = (list(t) for t in zip(*sorted(zip(sums, string_genotype))))
 
         self.predicted_genotypes = string_genotype
@@ -235,3 +293,17 @@ class Pipeline:
     def _do_bmm(self):
         bmm = BMM(self.unique_rows, self.full_data_dict, self.full_info, self.number_of_iterations)
         self._clustered_data_dict = bmm.do_clustering()
+
+
+raw_data_dir = "/home/laurynas/workspace/individual_project/simulated_data/populated_true_genotypes_10_10_0.01_100.txt"
+true_genotype_dir = "/home/laurynas/workspace/individual_project/simulated_data/true_genotypes_10_10_0.01_100.txt"
+clustering_method = "slc"
+tree_method = ""
+number_of_clusters = 10
+vector_size = 10
+write_adjusted_true_gen_dir = "/home/laurynas/workspace/individual_project/simulated_data/slc_nj_pipe_adjusted_true_gen.phy"
+write_predicted_gen_dir = "/home/laurynas/workspace/individual_project/simulated_data/slc_nj_pipe_predicted_gen.phy"
+
+
+slc_nj_pipe = Pipeline(raw_data_dir,true_genotype_dir,clustering_method,tree_method,number_of_clusters,vector_size,write_adjusted_true_gen_dir,write_predicted_gen_dir)
+print slc_nj_pipe.run_pipe()
