@@ -4,7 +4,7 @@ from numpy.random import *
 
 from k_medoid_clustering import *
 from rand_index import *
-
+import processing_sample_data as pr
 
 class BMM:
 
@@ -18,7 +18,7 @@ class BMM:
         self.number_of_iterations = number_of_iterations
 
         if not distance_matrix:
-            self.distance_matrix = np.matrix(find_distance_matrix(unique_rows))
+            self.distance_matrix = np.matrix(pr.find_distance_matrix(unique_rows))
 
     def count_occurences(self,list):
         occ = {}
@@ -90,7 +90,8 @@ class BMM:
 
                 nom = nan_to_num(nom)
                 den = nan_to_num(den)
-
+                if den ==0:
+                    den = 1.0
                 z_matrix[n, k] = nom * 1.0 / den
         return z_matrix
 
@@ -169,11 +170,11 @@ class BMM:
 
 
 
-        true_labels = []
-        for key in self.unique_rows.keys():
-            label = get_label_of_cluster(vector=key, full_dict = self.full_data_dict)
-            for _ in range(self.unique_rows[key]):
-                true_labels.append(label)
+        # true_labels = []
+        # for key in self.unique_rows.keys():
+        #     label = get_label_of_cluster(vector=key, full_dict = self.full_data_dict)
+        #     for _ in range(self.unique_rows[key]):
+        #         true_labels.append(label)
 
         silhoutes_scores =[]
         rands = []
@@ -237,10 +238,10 @@ class BMM:
             silhoutes_scores.append(sil)
 
 
-            rand = adjusted_rand_score(true_labels, predicted_labels)
-            rands.append(rand)
+            # rand = adjusted_rand_score(true_labels, predicted_labels)
+            # rands.append(rand)
 
-            stop = timeit.default_timer()
+            # stop = timeit.default_timer()
             return final_dict
             # print "----SUMMARY---------- with iterations:", self.number_of_iterations
             # print "True Silhoutte score", silhouette_score(self.distance_matrix, true_labels, metric="precomputed")
@@ -257,7 +258,7 @@ if __name__ == '__main__':
     sample_name = "analysis_10_10_0.01_100"
     dir = "/home/laurynas/workspace/individual_project/simulated_data/"+sample_name+".txt"
     # ------------------------------------------------------------------------------------------------
-    self.k_clusters = 10
+    k_clusters = 10
     lam = 5
     loop_times = 1
     unique_rows, full_data_dict, full_info = read_simulated_data_file(dir)

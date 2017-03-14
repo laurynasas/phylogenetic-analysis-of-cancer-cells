@@ -3,8 +3,7 @@ from sklearn.metrics import adjusted_rand_score, silhouette_score
 
 from processing_sample_data import *
 from silhouette_score_implementation import *
-from single_linkage_clustering import get_label_of_cluster
-from single_linkage_clustering import read_simulated_data_file
+from single_linkage_clustering import read_simulated_data_file,get_label_of_cluster
 
 
 class k_medoid:

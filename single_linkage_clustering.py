@@ -1,10 +1,9 @@
 import numpy as np
 from scipy.cluster.hierarchy import fcluster,linkage
-from processing_sample_data import find_distance_matrix
+import processing_sample_data as pr
 from silhouette_score_implementation import silhouette_score_slow
 from rand_index import rand_index
 from sklearn.metrics import adjusted_rand_score,silhouette_score
-from single_cell_processing import plot_2D_similarity_matrix
 import parsimony_tree_builder
 
 class DataNode:
@@ -108,7 +107,7 @@ if __name__ == "__main__":
     n_times = 1
 
     unique_rows, full_data_dict, full_info = read_simulated_data_file(dir)
-    distance_matrix = np.matrix(find_distance_matrix(unique_rows))
+    distance_matrix = np.matrix(pr.find_distance_matrix(unique_rows))
     # print distance_matrix
     true_labels = []
     for key in unique_rows.keys():

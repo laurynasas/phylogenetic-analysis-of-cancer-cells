@@ -82,10 +82,10 @@ def populate_cluster_with_errorous_data(orig_data, cluster_sizes, error):
     return labeled_data
 
 
-k_clusters = 10
-len_vectors = 10
-error_perct = 0.01
-dataset_size = 100
+k_clusters = 20
+len_vectors = 20
+error_perct = 0.1
+dataset_size = 1000
 
 original_clusters = generate_original_clusters(k_clusters, len_vectors)
 

@@ -16,6 +16,8 @@ def write_to_file_and_save_image(method, dataset, final_dict, no_cl):
 
 
 def process_file(dir):
+
+
     sample_data_file = open(dir, 'rw+')
     unique_rows = {}
     full_data_dict = {}
@@ -40,12 +42,19 @@ def process_file(dir):
 
 
 def process_single_cell_data_file(dir):
+    class DataNode:
+        def __init__(self, vector, cluster_label):
+            self.vector = vector
+            self.cluster_label = cluster_label
+
     sample_data_file = open(dir, 'rw+')
     unique_rows = {}
     full_data_dict = {}
+    full_info=[]
     labels = (sample_data_file.readline()).split(",")
     data_lines = [[] for _ in range(len(labels)-1)]
     for line in sample_data_file:
+        i=0
         # line_no +=1
         # label = labels[line_no]
         # line = line[:-1]
@@ -55,6 +64,7 @@ def process_single_cell_data_file(dir):
         line = map(str, line.split(","))
         # print "line len", len(line), line
         # print "->",line
+        full_info.append(DataNode(','.join(str(x) for x in line), None))
         for i in xrange(len(line)):
             data_lines[i].append(line[i])
         # print data_lines
@@ -78,7 +88,7 @@ def process_single_cell_data_file(dir):
         unique_rows[row] = 1
     # print unique_rows
 
-    return unique_rows, full_data_dict
+    return unique_rows, full_data_dict, full_info
 
 
 def diff_char_string(a, b):
