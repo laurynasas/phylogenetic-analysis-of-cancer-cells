@@ -64,9 +64,9 @@ class Pipeline:
         # print np.matrix(self._tree_distance_matrix)
         self._get_diff_vector()
 
-        print self.vector_predicted_diff
-        print self.vector_true_diff
-        print len(self._predicted_tree_labels)
+        # print self.vector_predicted_diff
+        # print self.vector_true_diff
+        # print len(self._predicted_tree_labels)
 
         distance = self._calculate_euclidiean_distance()
 
@@ -408,7 +408,7 @@ true_genotype_dirs=["/home/laurynas/workspace/individual_project/simulated_data/
                "/home/laurynas/workspace/individual_project/simulated_data/true_genotypes_20_20_0.05_1000.txt",
                "/home/laurynas/workspace/individual_project/simulated_data/true_genotypes_20_20_0.1_1000.txt"]
 
-clustering_methods = ["bmm","k_means","slc"]
+clustering_methods = ["bmm"]
 tree_methods = ["nj","upgma"]
 numbers_of_clusters=[5,5,5,10,10,10,20,20,20]
 vector_sizes = [5,5,5,10,10,10,20,20,20]
@@ -434,7 +434,7 @@ predicted_genotype_dirs=["/home/laurynas/workspace/individual_project/simulated_
                "/home/laurynas/workspace/individual_project/simulated_data/predicted_genotypes_20_20_0.1_1000.txt"]
 
 
-iterations = 1
+iterations = 10
 
 for clustering_method in clustering_methods:
     print "----New Clustering method ", clustering_method, " ----------------"
@@ -454,4 +454,6 @@ for clustering_method in clustering_methods:
                 averaged_results.append(result)
 
             print "Averaged Distance: \n", mean(averaged_results)
+            print "STD : \n", std(averaged_results)
+
             print "==============================================="

@@ -71,12 +71,20 @@ def plot_2D_similarity_matrix(matrix, method="", dataset="", no_cl="", data_type
     pyplot.show()
 
 
-def get_single_cell_genotypes(clustered_data_dict, delimiter=","):
+def get_single_cell_genotypes(clustered_data_dict,full_or_data, delimiter=","):
     genotypes = []
+    labels_in_clusters = {}
     for key, values in clustered_data_dict.items():
         genotype = [{'0': 0, '1': 0, 'NA': 0} for _ in range(len(values[0].split(delimiter)))]
         print "getting genotypes: ", key, len(values)
         for sample in values:
+            for label,vector in full_or_data.items():
+                if vector == sample.split(delimiter):
+                    if labels_in_clusters.get(key):
+                        labels_in_clusters[key] += [label]
+                    else:
+                        labels_in_clusters[key] = [label]
+
             for index,el in enumerate(sample.split(delimiter)):
                 genotype[index][el] +=1
         genotype_list =[]
@@ -91,16 +99,17 @@ def get_single_cell_genotypes(clustered_data_dict, delimiter=","):
 
     # sorted_sums, string_genotype = (list(t) for t in zip(*sorted(zip(sums, string_genotype))))
 
-    return string_genotype
+    return string_genotype, labels_in_clusters
 
 
 if __name__ == "__main__":
     directory = "/home/laurynas/workspace/individual_project/data/hou/snv.csv"
     unique_rows, full_or_data, full_info = pr.process_single_cell_data_file(directory)
-    bmm = bm.BMM(k_clusters=5, unique_rows=unique_rows, full_data_dict=full_or_data, full_info=full_info,
+    print full_or_data['"LN.T1"']
+    bmm = bm.BMM(k_clusters=10, unique_rows=unique_rows, full_data_dict=full_or_data, full_info=full_info,
               number_of_iterations=10)
     data = bmm.do_clustering()
-    print data.keys()
+    # print data.keys()
     target_dir = "/home/laurynas/workspace/individual_project/data/hou/clusters_5_snv.txt"
     target = open("/home/laurynas/workspace/individual_project/data/hou/clusters_5_snv.txt", 'w+')
     for key in data.keys():
@@ -113,7 +122,8 @@ if __name__ == "__main__":
     plot_2D_similarity_matrix(distance_matrix)
     plt.show()
 
-    # ready_gen = get_single_cell_genotypes(data)
+    # ready_gen, labels_in_clusters = get_single_cell_genotypes(data, full_or_data)
+    #
     # write_dir = "/home/laurynas/workspace/individual_project/data/hou/clusters_5_genotypes_snv.phy"
     # target = open(write_dir, 'w+')
     #
@@ -136,6 +146,6 @@ if __name__ == "__main__":
     # constructor_parsimony = ParsimonyTreeConstructor(searcher, starting_tree = nj_tree)
     # pars_tree = constructor_parsimony.build_tree(aln)
     # Phylo.draw_graphviz(pars_tree, prog="dot")
-    #
+    # print labels_in_clusters
     #
     # plt.show()

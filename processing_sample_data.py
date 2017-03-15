@@ -80,7 +80,7 @@ def process_single_cell_data_file(dir):
         # else:
         #     unique_rows[line] = 1
 
-    for label, column in zip(labels, data_lines):
+    for label, column in zip(labels[1:], data_lines):
         column = [x.replace("\n","") for x in column]
         full_data_dict[label] = column
         # print str(column)[1:-1]
