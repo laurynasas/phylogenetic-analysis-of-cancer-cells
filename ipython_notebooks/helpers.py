@@ -33,12 +33,12 @@ class Helper:
 
         return distance_matrix
 
+    class DataNode:
+        def __init__(self, vector, cluster_label):
+            self.vector = vector
+            self.cluster_label = cluster_label
 
     def read_simulated_data_file(self, dir):
-        class DataNode:
-            def __init__(self, vector, cluster_label):
-                self.vector = vector
-                self.cluster_label = cluster_label
 
         simulated_data_file = open(dir, 'rw+')
         unique_rows = {}
@@ -50,7 +50,7 @@ class Helper:
             line = line.split(" | ")
             cluster_label = int(line[1])
             vector = line[0][1:-1]
-            full_info.append(DataNode(vector, cluster_label))
+            full_info.append(self.DataNode(vector, cluster_label))
 
             if full_data_dict.get(cluster_label):
                 full_data_dict[cluster_label] += [map(int, vector.split(","))]
@@ -62,3 +62,59 @@ class Helper:
                 unique_rows[vector] = 1
 
         return unique_rows, full_data_dict, full_info
+
+    def process_single_cell_data_file(self, dir):
+
+        sample_data_file = open(dir, 'rw+')
+        unique_rows = {}
+        full_data_dict = {}
+        full_info = []
+        labels = (sample_data_file.readline()).split(",")
+        data_lines = [[] for _ in range(len(labels) - 1)]
+        for line in sample_data_file:
+
+            line = (line.split('"')[2][1:])
+            line = map(str, line.split(","))
+            for i in xrange(len(line)):
+                data_lines[i].append(line[i])
+
+        for label, column in zip(labels[1:], data_lines):
+            column = [x.replace("\n", "") for x in column]
+            full_data_dict[label] = column
+            row = ','.join(str(x) for x in column)
+            if label != " ":
+                full_info.append(self.DataNode(row, label))
+
+            unique_rows[row] = 1
+
+        return unique_rows, full_data_dict, full_info
+
+    def get_single_cell_genotypes(self, clustered_data_dict, full_or_data, delimiter=","):
+        genotypes = []
+        labels_in_clusters = {}
+        for key, values in clustered_data_dict.items():
+            genotype = [{'0': 0, '1': 0, 'NA': 0} for _ in range(len(values[0].split(delimiter)))]
+            print "getting genotypes: ", key, len(values)
+            for sample in values:
+                for label, vector in full_or_data.items():
+                    if vector == sample.split(delimiter):
+                        if labels_in_clusters.get(key):
+                            labels_in_clusters[key] += [label]
+                        else:
+                            labels_in_clusters[key] = [label]
+
+                for index, el in enumerate(sample.split(delimiter)):
+                    genotype[index][el] += 1
+            genotype_list = []
+            for index, el_dict in enumerate(genotype):
+                genotype_list.append(max(el_dict, key=el_dict.get))
+            genotypes.append(genotype_list)
+
+        sums = []
+        string_genotype = []
+        for el in genotypes:
+            string_genotype += [",".join(str(e) for e in el)]
+
+        # sorted_sums, string_genotype = (list(t) for t in zip(*sorted(zip(sums, string_genotype))))
+
+        return string_genotype, labels_in_clusters

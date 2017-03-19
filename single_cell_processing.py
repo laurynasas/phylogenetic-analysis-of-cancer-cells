@@ -136,7 +136,7 @@ if __name__ == "__main__":
     # # plt.show()
     #
     #
-    # ready_gen, labels_in_clusters = get_single_cell_genotypes(data, full_or_data)
+    ready_gen, labels_in_clusters = get_single_cell_genotypes(data, full_or_data)
     #
     # write_dir = "/home/laurynas/workspace/individual_project/data/hou/clusters_5_genotypes_snv.phy"
     # target = open(write_dir, 'w+')
