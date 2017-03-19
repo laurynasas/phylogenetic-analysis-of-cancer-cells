@@ -25,9 +25,17 @@ class KMedoid:
         self.unique_rows = unique_rows
         self.full_data_dict = full_data_dict
         self.full_info = full_info
+    def get_my_predicted_labels(self, C):
+        predicted_labels = []
+        for key,value in C.items():
+            for _ in value:
+                predicted_labels.append(key)
+        return predicted_labels
 
-    def do_k_medoid__my_clustering(self, D, k, tmax=100):
+    def do_k_medoid_my_clustering(self, tmax=100):
         # determine dimensions of distance matrix D
+        D = self.get_distance_matrix()
+        k= self.k
         m, n = D.shape
 
         # randomly initialize an array of k medoid indices
@@ -101,6 +109,14 @@ class KMedoid:
             true_genotypes.append(map(int, line.split(',')))
 
         return true_genotypes
+    def get_true_labels(self):
+
+        true_labels = []
+        for key in self.unique_rows.keys():
+            label = self.helper.get_label_of_cluster(vector=key, full_dict=self.full_data_dict)
+            for _ in range(self.unique_rows[key]):
+                true_labels.append(label)
+        self.true_labels = true_labels
 
 
 # if __name__ == '__main__':

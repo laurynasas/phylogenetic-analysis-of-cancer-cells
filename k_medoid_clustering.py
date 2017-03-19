@@ -26,8 +26,10 @@ class KMedoid:
         self.full_data_dict = full_data_dict
         self.full_info = full_info
 
-    def do_k_medoid__my_clustering(self, D, k, tmax=100):
+    def do_k_medoid_my_clustering(self, tmax=100):
         # determine dimensions of distance matrix D
+        D = self.get_distance_matrix()
+        k= self.k
         m, n = D.shape
 
         # randomly initialize an array of k medoid indices
@@ -84,6 +86,15 @@ class KMedoid:
 
     def get_sklearn_predicted_labels(self):
         return self.sk_learn_instance.labels_
+
+    def get_my_predicted_labels(self, C):
+        counter = 0
+        predicted_labels = []
+        for key,value in C.items():
+            for el in value:
+                predicted_labels[counter] = key
+                counter +=1
+        return predicted_labels
 
     def compare_genotypes(self, true_genotype, predicted_genotype):
         count = 0

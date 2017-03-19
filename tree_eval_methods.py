@@ -434,7 +434,7 @@ predicted_genotype_dirs=["/home/laurynas/workspace/individual_project/simulated_
                "/home/laurynas/workspace/individual_project/simulated_data/predicted_genotypes_20_20_0.1_1000.txt"]
 
 
-iterations = 1
+iterations = 10
 
 for clustering_method in clustering_methods:
     print "----New Clustering method ", clustering_method, " ----------------"

@@ -180,8 +180,8 @@ class BMM:
 
         silhoutes_scores =[]
         rands = []
-        import timeit
-        start = timeit.default_timer()
+        # import timeit
+        # start = timeit.default_timer()
         for i in range(self.number_of_iterations):
             miu_pixel_distributions = np.ones((self.k_clusters, self.d_pixels))
 

@@ -2,7 +2,11 @@ class Helper:
     def __init__(self):
         pass
 
-
+    def get_label_of_cluster(self, vector, full_dict):
+        vector = map(int, vector.split(","))
+        for key in full_dict.keys():
+            if vector in full_dict[key]:
+                return key
 
     def diff_char_string(self, a, b):
         distance = 0
