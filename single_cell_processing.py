@@ -11,6 +11,8 @@ import pylab as plt
 from Bio.Phylo.TreeConstruction import DistanceCalculator, DistanceTreeConstructor, ParsimonyTreeConstructor, ParsimonyScorer, NNITreeSearcher
 import networkx as nx
 from Bio.Alphabet import *
+from silhouette_score_implementation import *
+import processing_sample_data as pr
 
 def count_differences(str1, str2):
     count = 0
@@ -102,26 +104,38 @@ def get_single_cell_genotypes(clustered_data_dict,full_or_data, delimiter=","):
     return string_genotype, labels_in_clusters
 
 
+
 if __name__ == "__main__":
     directory = "/home/laurynas/workspace/individual_project/data/hou/snv.csv"
     unique_rows, full_or_data, full_info = pr.process_single_cell_data_file(directory)
-    print full_or_data['"LN.T1"']
-    bmm = bm.BMM(k_clusters=10, unique_rows=unique_rows, full_data_dict=full_or_data, full_info=full_info,
-              number_of_iterations=10)
-    data = bmm.do_clustering()
+    # print full_or_data['"LN.T1"']
+    for i in range(5):
+
+        bmm = bm.BMM(k_clusters=15
+                     , unique_rows=unique_rows, full_data_dict=full_or_data, full_info=full_info,
+                  number_of_iterations=10)
+        data, predicted_labels = bmm.do_clustering()
+
+        distance_matrix = pr.find_distance_matrix(unique_rows)
+
+        print silhouette_score(distance_matrix, predicted_labels, metric="precomputed")
+
     # print data.keys()
-    target_dir = "/home/laurynas/workspace/individual_project/data/hou/clusters_5_snv.txt"
-    target = open("/home/laurynas/workspace/individual_project/data/hou/clusters_5_snv.txt", 'w+')
-    for key in data.keys():
-        print key, len(data[key])
-        for el in data[key]:
-            target.write(el+"\n")
-
-    distance_matrix = calc_distance_matrix_from_file(target_dir)
+    # target_dir = "/home/laurynas/workspace/individual_project/data/hou/clusters_5_snv.txt"
+    # target = open("/home/laurynas/workspace/individual_project/data/hou/clusters_5_snv.txt", 'w+')
+    # for key in data.keys():
+    #     print key, len(data[key])
+    #     for el in data[key]:
+    #         target.write(el+"\n")
+    #
+    # distance_matrix = calc_distance_matrix_from_file(target_dir)
+    #
+    #
     # print distance_matrix
-    plot_2D_similarity_matrix(distance_matrix)
-    plt.show()
-
+    # # plot_2D_similarity_matrix(distance_matrix)
+    # # plt.show()
+    #
+    #
     # ready_gen, labels_in_clusters = get_single_cell_genotypes(data, full_or_data)
     #
     # write_dir = "/home/laurynas/workspace/individual_project/data/hou/clusters_5_genotypes_snv.phy"
@@ -130,7 +144,7 @@ if __name__ == "__main__":
     # target.write(str(len(ready_gen)) + " " + str(len(ready_gen[0])) + "\n")
     #
     # for index, el in enumerate(ready_gen):
-    #     target.write(str(index).ljust(10) + el.replace("NA","N") + "\n")
+    #     target.write(("Cluster "+str(index)).ljust(10) + el.replace("NA","N") + "\n")
     # target.close()
     #
     #
@@ -145,6 +159,8 @@ if __name__ == "__main__":
     # searcher = NNITreeSearcher(scorer)
     # constructor_parsimony = ParsimonyTreeConstructor(searcher, starting_tree = nj_tree)
     # pars_tree = constructor_parsimony.build_tree(aln)
+    # draw_ascii(pars_tree)
+    #
     # Phylo.draw_graphviz(pars_tree, prog="dot")
     # print labels_in_clusters
     #

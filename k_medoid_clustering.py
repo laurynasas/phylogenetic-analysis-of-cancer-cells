@@ -6,7 +6,7 @@ from silhouette_score_implementation import *
 from single_linkage_clustering import read_simulated_data_file,get_label_of_cluster
 
 
-class k_medoid:
+class KMedoid:
     def __init__(self, *args, **kwargs):
         self.k = kwargs.get('number_of_clusters')
         self.unique_rows = kwargs.get('unique_rows')
@@ -110,7 +110,7 @@ if __name__ == '__main__':
     no_cl = 20
     vector_size = 20
     unique_rows, full_data_dict, full_info = read_simulated_data_file(dir)
-    k_means_instance = k_medoid(no_cl, unique_rows, full_data_dict, full_info, vector_size)
+    k_means_instance = KMedoid(no_cl, unique_rows, full_data_dict, full_info, vector_size)
 
     sample_name = "analysis_genotypes_20_20_0.1_1000"
     dir = "/home/laurynas/workspace/individual_project/simulated_data/" + sample_name + ".txt"

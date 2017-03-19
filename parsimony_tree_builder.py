@@ -88,7 +88,7 @@ if __name__ == '__main__':
     dir = "/home/laurynas/workspace/individual_project/simulated_data/" + sample_name + ".txt"
     vector_size = 10
     no_clusters = 20
-    k_means_instance = k_medoid(dir=dir, number_of_clusters=no_clusters, vector_size=vector_size)
+    k_means_instance = KMedoid(dir=dir, number_of_clusters=no_clusters, vector_size=vector_size)
     predicted_clusters = k_means_instance.do_k_means_using_sklearn()
     full_pred_genotype = get_genotypes_from_clusters(predicted_clusters, vector_size, delimiter=", ")
     ready_genotype = prepare_raw_genotypes_for_tree_reconstruction(full_true_genotype, full_pred_genotype,
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     write_dir = "/home/laurynas/workspace/individual_project/simulated_data/" + sample_name_write + ".phy"
 
     true_genotypes = read_true_genotypes(read_dir)
-    # write_genotype_to_file(write_dir, [np.array(list_el) for list_el in true_genotypes])
+    # write_genotype_to_file(write_dir, [np.array(list_el) for list_el in populated_data])
 
     letters = [0,1]
     alphabet = SingleLetterAlphabet()
@@ -130,7 +130,7 @@ if __name__ == '__main__':
     print nj_tree
     scorer = ParsimonyScorer()
     searcher = NNITreeSearcher(scorer)
-    # constructor_parsimony = ParsimonyTreeConstructor(searcher, starting_tree = nj_tree)
+    constructor_parsimony = ParsimonyTreeConstructor(searcher, starting_tree = nj_tree)
     # pars_tree = constructor_parsimony.build_tree(aln)
     # pars_tree.ladderize(False)
 
