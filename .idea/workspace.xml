@@ -2,9 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b5c7fffb-57fd-424d-b443-aef554dad2dc" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/analysis_notebooks/single_cell_data/snv.csv" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/analysis_notebooks/simulate_data.py" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/analysis_notebooks/.ipynb_checkpoints/Untitled-checkpoint.ipynb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/analysis_notebooks/.ipynb_checkpoints/Untitled1-checkpoint.ipynb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/analysis_notebooks/.ipynb_checkpoints/Untitled2-checkpoint.ipynb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/analysis_notebooks/.ipynb_checkpoints/Untitled3-checkpoint.ipynb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/analysis_notebooks/.ipynb_checkpoints/Untitled4-checkpoint.ipynb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/analysis_notebooks/.ipynb_checkpoints/Untitled5-checkpoint.ipynb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/analysis_notebooks/.ipynb_checkpoints/Untitled6-checkpoint.ipynb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/analysis_notebooks/.ipynb_checkpoints/Untitled7-checkpoint.ipynb" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/analysis_notebooks/Untitled.ipynb" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/analysis_notebooks/Untitled7.ipynb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/analysis_notebooks/Untitled1.ipynb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/analysis_notebooks/Untitled2.ipynb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/analysis_notebooks/Untitled3.ipynb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/analysis_notebooks/Untitled4.ipynb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/analysis_notebooks/Untitled5.ipynb" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/analysis_notebooks/Untitled6.ipynb" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/analysis_notebooks/figures-405-adj-rand-indeces.ipynb" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/ipython_notebooks/.ipynb_checkpoints/Untitled-checkpoint.ipynb" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/ipython_notebooks/.ipynb_checkpoints/Untitled1-checkpoint.ipynb" afterPath="" />
@@ -32,12 +45,10 @@
       <change type="DELETED" beforePath="$PROJECT_DIR$/ipython_notebooks/silhouette_score_implementation.py" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/ipython_notebooks/single_cell/cluster_genotypes.phy" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/ipython_notebooks/tree_eval_methods.py" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/analysis_notebooks/Untitled1.ipynb" afterPath="$PROJECT_DIR$/analysis_notebooks/figures-401-402-clustering-silhouette-time-performance.ipynb" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/analysis_notebooks/Untitled2.ipynb" afterPath="$PROJECT_DIR$/analysis_notebooks/figures-403-bmm_efficiency.ipynb" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/analysis_notebooks/Untitled3.ipynb" afterPath="$PROJECT_DIR$/analysis_notebooks/figures-404-sklearn-vs-me-kmeans.ipynb" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/analysis_notebooks/Untitled5.ipynb" afterPath="$PROJECT_DIR$/analysis_notebooks/figures-501-scs-bmm-k-values.ipynb" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/analysis_notebooks/Untitled6.ipynb" afterPath="$PROJECT_DIR$/analysis_notebooks/figures-502-503-scs-clusters-distribution-tree.ipynb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/analysis_notebooks/.ipynb_checkpoints/figures-410-411-412-pipelines-checkpoint.ipynb" afterPath="$PROJECT_DIR$/analysis_notebooks/.ipynb_checkpoints/figures-410-411-412-pipelines-checkpoint.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/analysis_notebooks/figures-410-411-412-pipelines.ipynb" afterPath="$PROJECT_DIR$/analysis_notebooks/figures-410-411-412-pipelines.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/simulate_data.py" afterPath="$PROJECT_DIR$/simulate_data.py" />
     </list>
     <ignored path="individual_project.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -122,11 +133,35 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="figures-401-402-clustering-silhouette-time-performance.ipynb" pinned="false" current-in-tab="true">
+      <file leaf-file-name="figures-401-402-clustering-silhouette-time-performance.ipynb" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/analysis_notebooks/figures-401-402-clustering-silhouette-time-performance.ipynb">
           <provider selected="true" editor-type-id="ipnb-editor">
             <state>
               <selected id="0" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="simulate_data.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/simulate_data.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="311">
+              <caret line="98" column="0" selection-start-line="98" selection-start-column="0" selection-end-line="98" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#19#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="simulate_data.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/analysis_notebooks/simulate_data.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="18">
+              <caret line="1" column="57" selection-start-line="1" selection-start-column="57" selection-end-line="1" selection-end-column="57" />
+              <folding>
+                <element signature="e#67#86#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -146,9 +181,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/single_linkage_clustering.py" />
-        <option value="$PROJECT_DIR$/data/hou/snv.csv" />
-        <option value="$PROJECT_DIR$/data/hou/snv_cut.csv" />
         <option value="$PROJECT_DIR$/figures/scs_big_cluster10cls.txt" />
         <option value="$PROJECT_DIR$/figures/scs_big_cluster5cls.txt" />
         <option value="$PROJECT_DIR$/simulated_data/true_genotypes_5_5_0.01_20.txt" />
@@ -197,6 +229,9 @@
         <option value="$PROJECT_DIR$/analysis_notebooks/Untitled1.ipynb" />
         <option value="$PROJECT_DIR$/analysis_notebooks/figures-501-scs-bmm-k-values.ipynb" />
         <option value="$PROJECT_DIR$/analysis_notebooks/figures-401-402-clustering-silhouette-time-performance.ipynb" />
+        <option value="$PROJECT_DIR$/simulate_data.py" />
+        <option value="$PROJECT_DIR$/analysis_notebooks/simulated_data/my_first_simulation_of_true_genotypes.txt" />
+        <option value="$PROJECT_DIR$/analysis_notebooks/simulate_data.py" />
       </list>
     </option>
   </component>
@@ -316,11 +351,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/analysis_notebooks" />
       <recent name="$PROJECT_DIR$/analysis_notebooks/single_cell_data" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/ipython_notebooks/true_genotypes" />
       <recent name="$PROJECT_DIR$/ipython_notebooks" />
-      <recent name="$PROJECT_DIR$/figures" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -678,9 +713,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="30" width="1922" height="1051" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23748669" sideWeight="0.475" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23748669" sideWeight="0.475" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3290461" sideWeight="0.49574015" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3290461" sideWeight="0.5106496" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -804,11 +839,6 @@
           <option name="timeStamp" value="18" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/simulate_data.py</url>
-          <line>26</line>
-          <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/parsimony_tree_builder.py</url>
           <line>93</line>
           <option name="timeStamp" value="27" />
@@ -921,48 +951,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/ipython_notebooks/predicted_genotypes/predicted_genotypes_5_5_0.1_20.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ipython_notebooks/predicted_genotypes/predicted_genotypes_20_20_0.1_1000.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ipython_notebooks/predicted_genotypes/predicted_genotypes_20_20_0.01_1000.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ipython_notebooks/predicted_genotypes/predicted_genotypes_10_10_0.01_100.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ipython_notebooks/predicted_genotypes/predicted_genotypes_10_10_0.05_100.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ipython_notebooks/predicted_genotypes/predicted_genotypes_20_20_0.05_1000.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/ipython_notebooks/populated_data/populated_true_genotypes_5_5_0.01_20.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1275,7 +1263,7 @@
     <entry file="file://$PROJECT_DIR$/analysis_notebooks/figures-405-adj-rand-indices.ipynb">
       <provider selected="true" editor-type-id="ipnb-editor">
         <state>
-          <selected id="-1" />
+          <selected id="0" />
         </state>
       </provider>
     </entry>
@@ -1313,6 +1301,58 @@
       <provider selected="true" editor-type-id="ipnb-editor">
         <state>
           <selected id="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/simulate_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="311">
+          <caret line="98" column="0" selection-start-line="98" selection-start-column="0" selection-end-line="98" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analysis_notebooks/simulated_data/populated_true_genotypes_20_20_0.1_1000.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analysis_notebooks/simulated_data/true_genotypes_20_20_0.1_1000.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analysis_notebooks/simulated_data/my_first_simulation_of_true_genotypes.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analysis_notebooks/simulated_data/my_first_simulation_of_populated_clusters.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analysis_notebooks/simulate_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="18">
+          <caret line="1" column="57" selection-start-line="1" selection-start-column="57" selection-end-line="1" selection-end-column="57" />
+          <folding>
+            <element signature="e#67#86#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

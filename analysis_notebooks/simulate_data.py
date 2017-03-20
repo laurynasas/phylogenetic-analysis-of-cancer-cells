@@ -1,5 +1,13 @@
+'''
+    This file contains methods required to simulate data.
+'''
+
 from numpy import *
 from numpy.random import choice
+
+'''
+    Generates vector according to Bernoulli distribution
+'''
 
 
 def generate_vector(p, len_vectors, parent_vector):
@@ -7,9 +15,14 @@ def generate_vector(p, len_vectors, parent_vector):
     for i in xrange(len_vectors):
         if parent_vector[i] == 0:
             choice_one = choice(array([0, 1]), p=[1 - p, p])
-            # print choice_one
             new_vector[i] = choice_one
     return new_vector
+
+
+'''
+    Generate genotypes using rooted tree and goind down the branches introduce more error.
+    This is an imitation of mutation progression as it evolves more and more mutations occur.
+'''
 
 
 def generate_original_clusters(k_clusters, len_vectors):
@@ -30,6 +43,11 @@ def generate_original_clusters(k_clusters, len_vectors):
         tree.append(child)
         p += p_increment
     return tree[1:]
+
+
+'''
+    Computer random cluster sizes so that they add up to total size of dataset.
+'''
 
 
 def get_cluster_sizes(k_clusters, dataset_size, low=1):
@@ -55,6 +73,11 @@ def get_cluster_sizes(k_clusters, dataset_size, low=1):
     return cluster_sizes
 
 
+'''
+    When populating clusters it flips elements in the genotype according to the specified error.
+'''
+
+
 def flip(err, el):
     if el == 1:
         return choice(array([0, 1]), p=[err, 1 - err])
@@ -63,11 +86,21 @@ def flip(err, el):
     return None
 
 
+'''
+    Introduces error to vectors
+'''
+
+
 def get_vector_with_error(vector, error):
     new_vector = []
     for el in vector:
         new_vector.append(flip(error, el))
     return new_vector
+
+
+'''
+    Does the cluster population using the methods above
+'''
 
 
 def populate_cluster_with_errorous_data(orig_data, cluster_sizes, error):
@@ -78,31 +111,3 @@ def populate_cluster_with_errorous_data(orig_data, cluster_sizes, error):
             labeled_data[index].append(get_vector_with_error(ideal_el, error))
 
     return labeled_data
-
-
-k_clusters = 20
-len_vectors = 20
-error_perct = 0.1
-dataset_size = 1000
-
-original_clusters = generate_original_clusters(k_clusters, len_vectors)
-
-cluster_sizes = get_cluster_sizes(k_clusters, dataset_size)
-populated = populate_cluster_with_errorous_data(original_clusters, cluster_sizes, error_perct)
-
-print original_clusters
-target = open(
-    "./simulated_data/true_genotypes_" + str(len_vectors) + "_" + str(k_clusters) + "_" + str(error_perct) + "_" + str(
-        dataset_size) + ".txt", 'w+')
-for genotype in original_clusters:
-    target.write(",".join(map(str, genotype)) + "\n")
-
-target.close()
-
-target = open("./simulated_data/populated_true_genotypes_" + str(len_vectors) + "_" + str(k_clusters) + "_" + str(
-    error_perct) + "_" + str(dataset_size) + ".txt", 'w+')
-for key in populated.keys():
-    for el in populated[key]:
-        target.write(str(el) + ' | ' + str(key) + "\n")
-
-target.close()
