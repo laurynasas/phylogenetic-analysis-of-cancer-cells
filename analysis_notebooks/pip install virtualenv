@@ -1,0 +1,13 @@
+pip install virtualenv
+cd analysis_notebooks
+virtualenv analysis
+source analysis/bin/activate
+pip install --upgrade setuptools pip
+pip install ipykernel
+python -m ipykernel install --user --name=analysis
+pip install biopython
+pip install numpy
+pip install scipy
+pip install sklearn
+
+deactivate

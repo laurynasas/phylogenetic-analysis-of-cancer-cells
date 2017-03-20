@@ -161,7 +161,7 @@ if __name__ == "__main__":
     # pars_tree = constructor_parsimony.build_tree(aln)
     # draw_ascii(pars_tree)
     #
-    # Phylo.draw_graphviz(pars_tree, prog="dot")
+    # Phylo.draw_graphviz(pa    rs_tree, prog="dot")
     # print labels_in_clusters
     #
     # plt.show()

@@ -12,6 +12,12 @@ from Bio import Phylo
 import pylab as plt
 import numpy as np
 
+'''
+    This class is a wrapper class to encapsulate our analysis. It includes data clustering,
+    genotype extraction, tree reconstruction and similarity between true and predicted trees estimation.
+    Please see the notebook and my dissertation report for more information.
+    Especially Appendix A in the dissertation report which shows the workflow of this class.
+'''
 class Pipeline:
     def __init__(self, raw_data_dir, true_genotypes_dir, clustering_method, tree_method, number_of_clusters,
                  vector_size, write_adjusted_true_gen_dir, write_predicted_gen_dir,max_hamming_distance, bbm_number_of_iterations=10,
